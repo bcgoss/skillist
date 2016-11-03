@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Indeed Api Controller' do
   it 'can make new searches' do
-    pending 'Need the API Service to create records for us'
     VCR.use_cassette('indeed_api#search') do
       #As a Rake Task
       #When I curl the search endpoint with a zipcode and a search term

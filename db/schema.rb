@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103143502) do
+ActiveRecord::Schema.define(version: 20161103212533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,15 +47,22 @@ ActiveRecord::Schema.define(version: 20161103143502) do
     t.index ["search_id"], name: "index_results_on_search_id", using: :btree
   end
 
-  create_table "searches", force: :cascade do |t|
+  create_table "search_terms", force: :cascade do |t|
+    t.integer  "search_id"
     t.integer  "term_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["search_id"], name: "index_search_terms_on_search_id", using: :btree
+    t.index ["term_id"], name: "index_search_terms_on_term_id", using: :btree
+  end
+
+  create_table "searches", force: :cascade do |t|
     t.integer  "location_id"
     t.integer  "hits"
     t.string   "status"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["location_id"], name: "index_searches_on_location_id", using: :btree
-    t.index ["term_id"], name: "index_searches_on_term_id", using: :btree
   end
 
   create_table "terms", force: :cascade do |t|
@@ -68,6 +75,7 @@ ActiveRecord::Schema.define(version: 20161103143502) do
   add_foreign_key "jobs", "locations"
   add_foreign_key "results", "jobs"
   add_foreign_key "results", "searches"
+  add_foreign_key "search_terms", "searches"
+  add_foreign_key "search_terms", "terms"
   add_foreign_key "searches", "locations"
-  add_foreign_key "searches", "terms"
 end
