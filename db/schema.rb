@@ -10,18 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103132739) do
+ActiveRecord::Schema.define(version: 20161103143502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "jobs", force: :cascade do |t|
-    t.integer  "jobkey"
-    t.date     "post_date"
+    t.string   "jobkey"
+    t.string   "post_date"
+    t.string   "job_title"
     t.string   "company"
-    t.integer  "location_id"
     t.string   "snippet"
     t.string   "url"
+    t.integer  "location_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["location_id"], name: "index_jobs_on_location_id", using: :btree
@@ -29,23 +30,32 @@ ActiveRecord::Schema.define(version: 20161103132739) do
 
   create_table "locations", force: :cascade do |t|
     t.string   "country"
-    t.string   "city"
     t.string   "state"
+    t.string   "city"
     t.string   "postal_code"
     t.string   "formatted_location_full"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
+  create_table "results", force: :cascade do |t|
+    t.integer  "job_id"
+    t.integer  "search_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_results_on_job_id", using: :btree
+    t.index ["search_id"], name: "index_results_on_search_id", using: :btree
+  end
+
   create_table "searches", force: :cascade do |t|
-    t.string   "query"
+    t.integer  "term_id"
     t.integer  "location_id"
-    t.date     "last_check"
     t.integer  "hits"
-    t.integer  "status"
+    t.string   "status"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["location_id"], name: "index_searches_on_location_id", using: :btree
+    t.index ["term_id"], name: "index_searches_on_term_id", using: :btree
   end
 
   create_table "terms", force: :cascade do |t|
@@ -56,5 +66,8 @@ ActiveRecord::Schema.define(version: 20161103132739) do
   end
 
   add_foreign_key "jobs", "locations"
+  add_foreign_key "results", "jobs"
+  add_foreign_key "results", "searches"
   add_foreign_key "searches", "locations"
+  add_foreign_key "searches", "terms"
 end
